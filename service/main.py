@@ -23,18 +23,15 @@ def get_message_stream(stub):
             in_transit_messages= 10
     )):
         print(message)
-
         sleep(0.1)
-        # ack_message(stub, message)
+        ack_message(stub, message)
 
 
 def run():
     with grpc.insecure_channel('localhost:50051') as channel:
         stub = sidecar_pb2_grpc.SideCarStub(channel)
         # get_message(stub)
-        ack_message(stub, sidecar_pb2.Message(id=1))
-        ack_message(stub, sidecar_pb2.Message(id=1))
-        ack_message(stub, sidecar_pb2.Message(id=1))
+        # ack_message(stub, sidecar_pb2.Message(id=1))
         get_message_stream(stub)
 
 

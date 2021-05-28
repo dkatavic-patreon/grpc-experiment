@@ -33,7 +33,6 @@ pool_of_messages = [get_message_from_sqs(no_sleep=True) for i in range(100)]
 in_transit_messages = 0
 
 
-
 def get_fetched_messages_in_memory():
     return [message for message in pool_of_messages if message.status is Status.FETCHED]
 
@@ -47,9 +46,8 @@ def get_message_for_processing_in_memory():
 def get_messages():
     while True:
         if len(get_fetched_messages_in_memory()) == 0:
-            sleep(0.1)
+            return
         else:
-
             yield get_message_for_processing_in_memory()
 
 
@@ -74,6 +72,7 @@ class SideCarServicer(sidecar_pb2_grpc.SideCarServicer):
 
 
 def refresh_messages_from_sqs():
+    """"Not used now"""
     while True:
         if len(get_fetched_messages_in_memory()) >= in_transit_messages * 2:
             print("Messages in memory are at limit, not pooling for SQS")
@@ -93,8 +92,6 @@ def serve():
     sidecar_pb2_grpc.add_SideCarServicer_to_server(SideCarServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
-    # Hacky thing
-    # refresh_messages_from_sqs()
 
     server.wait_for_termination()
     print("SERVING END")
