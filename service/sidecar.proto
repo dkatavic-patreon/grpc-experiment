@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+service SideCar {
+
+    rpc getMessage(MessageConfig) returns (Message) {}
+
+    rpc getMessageStream(MessageConfig) returns (stream Message) {}
+
+    rpc ackMessage(Message) returns (Empty) {}
+
+}
+
+message MessageConfig {
+    int32 in_transit_messages = 1;
+}
+
+message Empty{}
+
+message Message {
+    int32 id = 1;
+    string text = 2;
+}
